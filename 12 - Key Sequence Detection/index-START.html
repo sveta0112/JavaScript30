@@ -7,6 +7,20 @@
 </head>
 <body>
 <script>
+  const pressed = [];
+  const secretCode = 'svetakhan';
+
+window.addEventListener('keyup', (e) => {
+  
+  console.log(e.key);
+  pressed.push(e.key);//[w, r, g, s, v, e, t, a, k, h, a, n]
+  pressed.splice(-secretCode.length - 1, pressed.length - secretCode.length);//(-10,(12-9))-->(-10, 3)
+  if (pressed.join('').includes(secretCode)) {
+    console.log('DING DING!');
+    cornify_add();
+  }
+  console.log(pressed);
+});
 </script>
 </body>
 </html>

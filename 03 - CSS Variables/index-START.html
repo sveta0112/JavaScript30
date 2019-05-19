@@ -21,6 +21,21 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    :root {
+      --base: #ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+    }
+
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    .hl {
+      color: var(--base);
+    }
 
     /*
       misc styles, nothing to do with CSS variables
@@ -45,6 +60,19 @@
   </style>
 
   <script>
+    //all 3 inputs 
+    const inputs = document.querySelectorAll('.controls input');
+    
+    function handleUpdate() {
+      //dataset: data-sizing="px" for spacing and blur, '' for base
+      const suffix = this.dataset.sizing || ''; // px or ''
+      //this.name --> spacing or blur or base --> this --> <input ....>
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix );
+    }
+    //inputs : [input#spacing, input#blur, input#base]
+    inputs.forEach(input => input.addEventListener('change', handleUpdate));
+    inputs.forEach(input => input.addEventListener('mousemove', handleUpdate));
+
   </script>
 
 </body>

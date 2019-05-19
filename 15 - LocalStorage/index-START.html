@@ -22,13 +22,106 @@
     <form class="add-items">
       <input type="text" name="item" placeholder="Item Name" required>
       <input type="submit" value="+ Add Item">
+      
     </form>
+    <button type="button" name="clearAll" class="clear">Clear All</button>
+    <button type="button" name="checkAll" class="check">Check All</button>
+    <button type="button" name="uncheckAll" class="uncheck">Check All</button>
+
+
   </div>
 
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  const deleteButton = document.querySelector('.clear');
+  const checkButton = document.querySelector('.check');
+  const uncheckButton = document.querySelector('.uncheck');
+
+  //it will check the localstorage first, if its empty then set to empty array
+  const items = JSON.parse(localStorage.getItem("items"))||[];
+
+  function addItem(e){
+      e.preventDefault();
+      //this--> form tag
+      const text = (this.querySelector("[name=item]")).value;
+      const item = {
+        text: text,
+        done: false
+      };
+
+      items.push(item);
+      //for visual update on page
+      populateList(items, itemsList);
+      //to store items in localstorage
+      localStorage.setItem('items', JSON.stringify(items));//need to stringify items for local storage
+      //form reset
+      this.reset();
+  }
+  
+
+  function populateList(items = [], itemsList){
+     itemsList.innerHTML = items.map((item, index) => {
+       return `
+         <li>
+          <input type="checkbox" data-index=${index} id="item${index}" ${item.done ? 'checked': ''}>
+          <label for="item${index}">${item.text}</label>
+        </li>
+       
+       `
+     }).join('');
+  }
+
+
+  function toggleDone(e) {
+      if(!e.target.matches('input'))return;//skip this unless this is input
+      const el = e.target;
+      const index = el.dataset.index;//get each index by attribute data-index in input
+      items[index].done = !items[index].done;//change from false to true and the oter way around
+      //to update localstorage items
+      localStorage.setItem('items', JSON.stringify(items));
+      //for visual update on page
+      populateList(items, itemsList);
+  }
+
+  function clearList(){
+      localStorage.removeItem("items");
+      //localStorage.setItem('items', JSON.stringify(items))
+      populateList([],itemsList);
+  }
+
+  function checkList(e){
+    items.forEach((item, index) => {
+      //console.log(e.target);//<button type="button" name="checkAll" class="check">Check All</button>
+
+      if(e.target.name === "checkAll"){
+         items[index].done = true;
+      }
+    });
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+  function uncheckList(e){
+    items.forEach((item, index) => {
+      if(e.target.name === "uncheckAll"){
+        items[index].done = false;
+      }
+    });
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+  addItems.addEventListener("submit", addItem);
+  itemsList.addEventListener("click", toggleDone);
+  deleteButton.addEventListener("click", clearList);
+  checkButton.addEventListener("click", checkList);
+  uncheckButton.addEventListener("click", uncheckList);
+
+  
+  // for visual pupose, so we see out list after refresh page, which comes form localStorage
+  //if it is not empty, or it shows empty list if there is notning in localstorage
+  populateList(items, itemsList);
 
 </script>
 

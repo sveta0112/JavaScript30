@@ -96,6 +96,47 @@
   </div>
 
 <script>
+   const checkBoxes = document.querySelectorAll(".inbox input[type='checkbox']");
+   
+   let lastChecked;
+   
+
+   function handleCheck(e){
+    
+     //check if they had the shift key down
+     //AND check that they are checking in it(input box status is checked)
+     let inBetween = false;
+     if(e.shiftKey && this.checked){
+        //go ahead and do what we please
+        //loop over every single checkbox
+        checkBoxes.forEach(checkbox =>{
+          console.log(checkbox);
+          //here this means first time check the box, and lastChecked is second time check box
+          if(checkbox === this || checkbox === lastChecked){
+            inBetween = !inBetween;
+            console.log('starting to chekc them in bewteen');
+            
+          }
+          
+          //since first time we click on some input box, it will inBetween set to true
+          if(inBetween){
+            //and we are going to set all our below input boxes to checked status, until we
+            //click second(lastChecked) input box, which will set inBetween back to false, and loop will end
+            
+           
+            checkbox.checked = true;
+            console.log('status',checkbox.checked);
+          }
+          
+        });
+
+     }
+     
+     //this --> <input type="checkbox">
+     lastChecked = this;
+   }
+    
+   checkBoxes.forEach(checkbox => checkbox.addEventListener("click", handleCheck));
 </script>
 </body>
 </html>

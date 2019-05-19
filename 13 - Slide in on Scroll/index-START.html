@@ -45,9 +45,11 @@
   <script>
     function debounce(func, wait = 20, immediate = true) {
       var timeout;
-      return function() {
+      return function() {  //closure1 --> timeout, func, wait, immediate
+      //  console.log('this',this);//-->this is Window
+      //  console.log('arguments', arguments);
         var context = this, args = arguments;
-        var later = function() {
+        var later = function() { //closure2  --> timeout, context, arguments, callNow func, ...
           timeout = null;
           if (!immediate) func.apply(context, args);
         };
@@ -58,6 +60,31 @@
       };
     }
 
+
+    const slideImages = document.querySelectorAll(".slide-in");
+
+    function checkSlide(e) {
+      
+      slideImages.forEach(slideImage => {
+        //half way through the image
+        const slideInAt = (window.scrollY + window.innerHeight) - slideImage.height / 2;
+        //bottom of the image
+        const imageBottom = slideImage.offsetTop + slideImage.height;
+        
+        const isHalfShown = slideInAt > slideImage.offsetTop;
+        
+        const isNotScrolledPast = window.scrollY < imageBottom;
+
+        if(isHalfShown && isNotScrolledPast){
+          slideImage.classList.add('active');
+        } else {
+          slideImage.classList.remove('active');
+
+        }
+      });
+    }
+
+    window.addEventListener("scroll", debounce(checkSlide));
   </script>
 
   <style>
